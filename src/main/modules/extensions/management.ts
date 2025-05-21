@@ -413,7 +413,7 @@ export class ExtensionManager extends TypedEventEmitter<{
     }
 
     if (extensionData.type === "unpacked") {
-      // TODO: Remove unpacked extension
+      await this.unloadExtensionWithId(extensionId);
     } else if (extensionData.type === "crx") {
       await uninstallExtension(extensionId, {
         extensionsPath: this.getExtensionsPath(extensionData.type),
@@ -462,5 +462,44 @@ export class ExtensionManager extends TypedEventEmitter<{
     await this.extensionStore.set(extensionId, { ...oldData, pinned });
     await this.updateCache();
     return true;
+  }
+
+  /**
+   * Load an unpacked extension from a local directory
+   * @param extensionPath - The path to the extension directory
+   * @returns The extension ID if successful, null otherwise
+   */
+  public async loadUnpackedExtension(extensionPath: string): Promise<string | null> {
+    try {
+      // Check if directory exists and has a manifest
+      const isADirectory = await isDirectory(extensionPath);
+      if (!isADirectory) {
+        console.error(`Extension path is not a directory: ${extensionPath}`);
+        return null;
+      }
+
+      const extensionHasManifest = await hasManifest(extensionPath);
+      if (!extensionHasManifest) {
+        console.error(`Extension directory does not contain a manifest.json: ${extensionPath}`);
+        return null;
+      }
+
+      // Load the extension
+      const extension = await this.profileSession.loadExtension(extensionPath);
+      if (!extension) {
+        console.error(`Failed to load extension from: ${extensionPath}`);
+        return null;
+      }
+
+      await this.addInstalledExtension("unpacked", extension.id);
+
+      // After load extension
+      await this._afterLoadExtension(extension);
+
+      return extension.id;
+    } catch (error) {
+      console.error(`Error loading unpacked extension from ${extensionPath}:`, error);
+      return null;
+    }
   }
 }

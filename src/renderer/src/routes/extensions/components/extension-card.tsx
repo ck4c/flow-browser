@@ -63,7 +63,14 @@ function ExtensionCard({ extension, isProcessing, setExtensionEnabled, onDetails
         </div>
         <p className="text-muted-foreground text-sm">{extension.description || ""}</p>
         <div className="flex items-center space-x-4">
-          <span className="text-xs text-muted-foreground">Version {extension.version}</span>
+          <div className="flex items-center space-x-2">
+            <span className="text-xs text-muted-foreground">Version {extension.version}</span>
+            {extension.type === "unpacked" && (
+              <span className="text-xs bg-amber-100 text-amber-800 dark:bg-amber-900 dark:text-amber-100 px-1.5 py-0.5 rounded-sm">
+                Local
+              </span>
+            )}
+          </div>
           <div className="flex space-x-2">
             <Button variant="outline" size="sm" className="text-xs" onClick={() => onDetailsClick(extension.id)}>
               Details

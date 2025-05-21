@@ -504,6 +504,9 @@ const extensionsAPI: FlowExtensionsAPI = {
   },
   setExtensionPinned: async (extensionId: string, pinned: boolean) => {
     return ipcRenderer.invoke("extensions:set-extension-pinned", extensionId, pinned);
+  },
+  loadUnpacked: async () => {
+    return ipcRenderer.invoke("extensions:load-unpacked");
   }
 };
 

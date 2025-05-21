@@ -53,6 +53,15 @@ function ExtensionDetails({
           <p className="text-sm text-muted-foreground">{extension.version}</p>
         </div>
 
+        {isDeveloperMode && (
+          <div className="space-y-2">
+            <h3 className="text-sm font-medium">Type</h3>
+            <p className="text-sm text-muted-foreground">
+              {extension.type === "unpacked" ? "Local (unpacked)" : "Chrome Web Store"}
+            </p>
+          </div>
+        )}
+
         <div className="space-y-2">
           <h3 className="text-sm font-medium">Size</h3>
           <p className="text-sm text-muted-foreground">

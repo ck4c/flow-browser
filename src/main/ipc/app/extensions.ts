@@ -189,6 +189,40 @@ ipcMain.handle(
   }
 );
 
+ipcMain.handle(
+  "extensions:load-unpacked",
+  async (event: IpcMainInvokeEvent): Promise<boolean> => {
+    if (!browser) return false;
+
+    const profileId = await getCurrentProfileIdFromWebContents(event.sender);
+    if (!profileId) return false;
+
+    const loadedProfile = browser.getLoadedProfile(profileId);
+    if (!loadedProfile) return false;
+
+    const { extensionsManager } = loadedProfile;
+    if (!extensionsManager) return false;
+
+    const window = browser.getWindowFromWebContents(event.sender);
+    if (!window) return false;
+
+    const result = await dialog.showOpenDialog(window.window, {
+      title: "Select Extension Directory",
+      buttonLabel: "Load Extension",
+      properties: ["openDirectory"]
+    });
+
+    if (result.canceled || result.filePaths.length === 0) {
+      return false;
+    }
+
+    const extensionPath = result.filePaths[0];
+    const extensionId = await extensionsManager.loadUnpackedExtension(extensionPath);
+
+    return extensionId !== null;
+  }
+);
+
 export async function fireOnExtensionsUpdated(profileId: string) {
   if (!browser) return;
 
