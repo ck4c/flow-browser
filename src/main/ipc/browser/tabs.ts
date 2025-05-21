@@ -236,6 +236,7 @@ ipcMain.handle("tabs:move-tab", async (event, tabId: number, newPosition: number
   }
 
   for (const targetTab of targetTabs) {
+    console.log("moving tab", targetTab.id, newPosition);
     targetTab.updateStateProperty("position", newPosition);
   }
 
