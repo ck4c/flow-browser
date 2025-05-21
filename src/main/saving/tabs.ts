@@ -135,7 +135,7 @@ export async function loadTabsFromStorage() {
  */
 export async function loadTabGroupsFromStorage() {
   const tabGroups: { [id: string]: TabGroupData } = await TabGroupsDataStore.getFullData();
-  
+
   return Object.values(tabGroups);
 }
 
@@ -144,7 +144,7 @@ export async function loadTabGroupsFromStorage() {
  */
 export async function loadTabFoldersFromStorage() {
   const tabFolders: { [id: string]: TabFolderData } = await TabFoldersDataStore.getFullData();
-  
+
   return Object.values(tabFolders);
 }
 
@@ -191,15 +191,15 @@ export async function createInitialWindow() {
   const tabs = await loadTabsFromStorage();
   const tabGroups = await loadTabGroupsFromStorage();
   const tabFolders = await loadTabFoldersFromStorage();
-  
+
   if (tabs.length > 0) {
     // Create tabs first
     await createTabsFromTabDatas(browser, tabs);
-    
+
     if (tabGroups.length > 0) {
       await createTabGroupsFromTabGroupDatas(browser, tabGroups);
     }
-    
+
     if (tabFolders.length > 0) {
       await createTabFoldersFromTabFolderDatas(browser, tabFolders);
     }

@@ -8,8 +8,8 @@ import { TabFolder } from "@/browser/tabs/tab-folders";
 import { windowTabsChanged } from "@/ipc/browser/tabs";
 import { setWindowSpace } from "@/ipc/session/spaces";
 import { TypedEventEmitter } from "@/modules/typed-event-emitter";
-import { 
-  shouldArchiveTab, 
+import {
+  shouldArchiveTab,
   shouldSleepTab,
   getTabGroupDatastore,
   getTabFolderDatastore,
@@ -48,7 +48,7 @@ export class TabManager extends TypedEventEmitter<TabManagerEvents> {
   // Tab Groups
   public tabGroups: Map<number, TabGroup>;
   private tabGroupCounter: number = 0;
-  
+
   public tabFolders: Map<string, TabFolder> = new Map();
   private tabFolderCounter: number = 0;
 
@@ -677,14 +677,14 @@ export class TabManager extends TypedEventEmitter<TabManagerEvents> {
 
     return tabGroup;
   }
-  
+
   /**
    * Persist a tab to storage
    */
   public async persistTab(tab: Tab) {
     return persistTabToStorage(tab);
   }
-  
+
   /**
    * Persist a tab group to storage
    */
@@ -692,24 +692,26 @@ export class TabManager extends TypedEventEmitter<TabManagerEvents> {
     const tabGroupStore = getTabGroupDatastore();
     const id = `tabgroup-${tabGroup.id}`;
     const tabGroupData = tabGroup.getData();
-    
+
     console.log("saving tab group", tabGroupData.id, tabGroupData.mode);
-    return await tabGroupStore.set(id, tabGroupData)
+    return await tabGroupStore
+      .set(id, tabGroupData)
       .then(() => true)
       .catch(() => false);
   }
-  
+
   /**
    * Remove a tab group from storage
    */
   public async removeTabGroupFromStorage(tabGroup: TabGroup) {
     const tabGroupStore = getTabGroupDatastore();
     const id = `tabgroup-${tabGroup.id}`;
-    return await tabGroupStore.remove(id)
+    return await tabGroupStore
+      .remove(id)
       .then(() => true)
       .catch(() => false);
   }
-  
+
   /**
    * Persist a tab folder to storage
    */
@@ -717,36 +719,38 @@ export class TabManager extends TypedEventEmitter<TabManagerEvents> {
     const tabFolderStore = getTabFolderDatastore();
     const id = tabFolder.id;
     const tabFolderData = tabFolder.getData();
-    
+
     console.log("saving tab folder", tabFolderData.id, tabFolderData.name);
-    return await tabFolderStore.set(id, tabFolderData)
+    return await tabFolderStore
+      .set(id, tabFolderData)
       .then(() => true)
       .catch(() => false);
   }
-  
+
   /**
    * Remove a tab folder from storage
    */
   public async removeTabFolderFromStorage(tabFolder: TabFolder) {
     const tabFolderStore = getTabFolderDatastore();
     const id = tabFolder.id;
-    return await tabFolderStore.remove(id)
+    return await tabFolderStore
+      .remove(id)
       .then(() => true)
       .catch(() => false);
   }
-  
+
   /**
    * Create a tab folder
    */
   public createTabFolder(
-    name: string, 
-    profileId: string, 
-    spaceId: string, 
-    position: number, 
+    name: string,
+    profileId: string,
+    spaceId: string,
+    position: number,
     initialTabGroupIds: number[] = []
   ): TabFolder {
     const id = `folder-${this.tabFolderCounter++}`;
-    
+
     const folder = new TabFolder(
       this,
       id,
@@ -756,7 +760,7 @@ export class TabManager extends TypedEventEmitter<TabManagerEvents> {
       position,
       true // expanded by default
     );
-    
+
     for (const tabGroupId of initialTabGroupIds) {
       const tabGroup = this.getTabGroupById(tabGroupId);
       if (tabGroup) {
@@ -764,28 +768,28 @@ export class TabManager extends TypedEventEmitter<TabManagerEvents> {
         tabGroup.setFolder(id);
       }
     }
-    
+
     // Set up event listeners
     folder.on("destroyed", () => {
       if (this.tabFolders.has(id)) {
         this.removeTabFolder(id);
       }
     });
-    
+
     this.tabFolders.set(id, folder);
-    
+
     folder.saveFolder();
-    
+
     return folder;
   }
-  
+
   /**
    * Remove a tab folder
    */
   public removeTabFolder(folderId: string): boolean {
     const folder = this.tabFolders.get(folderId);
     if (!folder) return false;
-    
+
     // Remove folder reference from all tab groups
     for (const tabGroupId of folder.tabGroupIds) {
       const tabGroup = this.getTabGroupById(tabGroupId);
@@ -793,22 +797,22 @@ export class TabManager extends TypedEventEmitter<TabManagerEvents> {
         tabGroup.setFolder(null);
       }
     }
-    
+
     this.tabFolders.delete(folderId);
-    
+
     // Remove from storage
     this.removeTabFolderFromStorage(folder);
-    
+
     return true;
   }
-  
+
   /**
    * Get a tab folder by ID
    */
   public getTabFolderById(folderId: string): TabFolder | undefined {
     return this.tabFolders.get(folderId);
   }
-  
+
   /**
    * Get all tab folders in a space
    */
@@ -846,13 +850,13 @@ export class TabManager extends TypedEventEmitter<TabManagerEvents> {
 
     // Remove from storage first
     this.removeTabGroupFromStorage(tabGroup);
-    
+
     // Remove from any folder it might be in
     if (tabGroup.folderId) {
       const folder = this.getTabFolderById(tabGroup.folderId);
       folder?.removeTabGroup(tabGroup.id);
     }
-    
+
     this.tabGroups.delete(groupId);
     this.removeFromActivationHistory(groupId);
 

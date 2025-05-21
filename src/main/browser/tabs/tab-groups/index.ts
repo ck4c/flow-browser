@@ -131,7 +131,7 @@ export abstract class BaseTabGroup extends TypedEventEmitter<TabGroupEvents> {
 
     this.tabIds.push(tabId);
     this.emit("tab-added", tabId);
-    
+
     this.on("tab-added", () => this.saveTabGroup());
     this.on("tab-removed", () => this.saveTabGroup());
     this.on("position-changed", () => this.saveTabGroup());
@@ -215,32 +215,32 @@ export abstract class BaseTabGroup extends TypedEventEmitter<TabGroupEvents> {
    */
   public setFolder(folderId: string | null) {
     this.errorIfDestroyed();
-    
+
     if (this.folderId === folderId) return;
-    
+
     this.folderId = folderId;
     this.emit("folder-changed", folderId);
   }
-  
+
   /**
    * Save tab group to persistent storage
    */
   public async saveTabGroup() {
     this.errorIfDestroyed();
-    
+
     try {
       await this.tabManager.persistTabGroup(this as unknown as TabGroup);
     } catch (error) {
       console.error(`Error saving tab group ${this.id}:`, error);
     }
   }
-  
+
   /**
    * Get tab group data
    */
   public getData(): TabGroupData {
     this.errorIfDestroyed();
-    
+
     return {
       id: this.id,
       mode: this.mode,
@@ -257,9 +257,9 @@ export abstract class BaseTabGroup extends TypedEventEmitter<TabGroupEvents> {
    */
   public setPosition(position: number) {
     this.errorIfDestroyed();
-    
+
     if (this.position === position) return;
-    
+
     const firstTab = this.tabs[0];
     if (firstTab) {
       firstTab.updateStateProperty("position", position);

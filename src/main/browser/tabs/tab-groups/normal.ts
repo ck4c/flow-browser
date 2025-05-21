@@ -2,7 +2,7 @@ import { BaseTabGroup } from "./index";
 
 export class NormalTabGroup extends BaseTabGroup {
   public mode: "normal" = "normal" as const;
-  
+
   /**
    * Override addTab to enforce single tab limit
    */

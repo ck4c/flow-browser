@@ -883,7 +883,7 @@ export class Tab extends TypedEventEmitter<TabEvents> {
       console.warn(`Tab ${this.id} has no tab group, creating a fallback normal mode`);
       newTabGroupMode = "normal";
       newBounds = pageBounds;
-      
+
       // Create a real tab group for this tab to prevent future issues
       this.tabManager.createTabGroup("normal", [this.id]);
     } else if (tabGroup.mode === "glance") {

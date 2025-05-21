@@ -68,12 +68,12 @@ function getWindowTabsData(window: TabbedBrowserWindow) {
 
   const tabs = tabManager.getTabsInWindow(windowId);
   const tabGroups = tabManager.getTabGroupsInWindow(windowId);
-  
+
   const spaceSet = new Set<string>();
   for (const tab of tabs) {
     spaceSet.add(tab.spaceId);
   }
-  
+
   const tabFolders: TabFolder[] = [];
   for (const spaceId of spaceSet) {
     const foldersInSpace = tabManager.getTabFoldersInSpace(spaceId);

@@ -61,13 +61,13 @@ export class TabFolder extends TypedEventEmitter<TabFolderEvents> {
   public addTabGroup(tabGroupId: number): boolean {
     const tabGroup = this.tabManager.getTabGroupById(tabGroupId);
     if (!tabGroup) return false;
-    
+
     if (this.tabGroupIds.has(tabGroupId)) return true;
-    
+
     if (tabGroup.profileId !== this.profileId || tabGroup.spaceId !== this.spaceId) {
       return false;
     }
-    
+
     this.tabGroupIds.add(tabGroupId);
     this.emit("tabgroup-added", tabGroupId);
     return true;
@@ -78,7 +78,7 @@ export class TabFolder extends TypedEventEmitter<TabFolderEvents> {
    */
   public removeTabGroup(tabGroupId: number): boolean {
     if (!this.tabGroupIds.has(tabGroupId)) return false;
-    
+
     this.tabGroupIds.delete(tabGroupId);
     this.emit("tabgroup-removed", tabGroupId);
     return true;
@@ -103,7 +103,7 @@ export class TabFolder extends TypedEventEmitter<TabFolderEvents> {
    */
   public async saveFolder() {
     if (this.isDestroyed) return;
-    
+
     try {
       await this.tabManager.persistTabFolder(this);
     } catch (error) {
@@ -116,7 +116,7 @@ export class TabFolder extends TypedEventEmitter<TabFolderEvents> {
    */
   public setExpanded(expanded: boolean) {
     if (this.expanded === expanded) return;
-    
+
     this.expanded = expanded;
     this.emit("expanded-changed", expanded);
   }
@@ -126,7 +126,7 @@ export class TabFolder extends TypedEventEmitter<TabFolderEvents> {
    */
   public setName(name: string) {
     if (this.name === name) return;
-    
+
     this.name = name;
     this.emit("name-changed", name);
   }
@@ -136,7 +136,7 @@ export class TabFolder extends TypedEventEmitter<TabFolderEvents> {
    */
   public setPosition(position: number) {
     if (this.position === position) return;
-    
+
     this.position = position;
     this.emit("position-changed", position);
   }
@@ -161,11 +161,11 @@ export class TabFolder extends TypedEventEmitter<TabFolderEvents> {
    */
   public destroy() {
     if (this.isDestroyed) return;
-    
+
     this.isDestroyed = true;
     this.emit("destroyed");
     this.destroyEmitter();
-    
+
     this.tabGroupIds.clear();
   }
 }
