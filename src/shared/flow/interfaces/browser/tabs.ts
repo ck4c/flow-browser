@@ -46,4 +46,11 @@ export interface FlowTabsAPI {
    * @param goBackToTab Whether to go back to the tab after Picture in Picture mode is disabled
    */
   disablePictureInPicture: (goBackToTab: boolean) => Promise<boolean>;
+
+  /**
+   * Move a tab to a new position
+   * @param tabId The id of the tab to move
+   * @param newPosition The new position of the tab
+   */
+  moveTab: (tabId: number, newPosition: number) => Promise<boolean>;
 }

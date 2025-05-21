@@ -217,6 +217,31 @@ ipcMain.handle("tabs:disable-picture-in-picture", async (event, goBackToTab: boo
   return disabled;
 });
 
+ipcMain.handle("tabs:move-tab", async (event, tabId: number, newPosition: number) => {
+  const webContents = event.sender;
+  const window = browser?.getWindowFromWebContents(webContents);
+  if (!window) return false;
+
+  const tabManager = browser?.tabs;
+  if (!tabManager) return false;
+
+  const tab = tabManager.getTabById(tabId);
+  if (!tab) return false;
+
+  let targetTabs: Tab[] = [tab];
+
+  const tabGroup = tabManager.getTabGroupByTabId(tab.id);
+  if (tabGroup) {
+    targetTabs = tabGroup.tabs;
+  }
+
+  for (const targetTab of targetTabs) {
+    targetTab.updateStateProperty("position", newPosition);
+  }
+
+  return true;
+});
+
 ipcMain.on("tabs:show-context-menu", (event, tabId: number) => {
   const webContents = event.sender;
   const tabbedWindow = browser?.getWindowFromWebContents(webContents);
