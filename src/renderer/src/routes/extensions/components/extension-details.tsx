@@ -1,7 +1,8 @@
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
-import { ChevronLeft } from "lucide-react";
+import { ChevronLeft, PuzzleIcon } from "lucide-react";
 import type { SharedExtensionData } from "~/types/extensions";
+import ReactDOM from "react-dom/client";
 
 interface ExtensionDetailsProps {
   extension: SharedExtensionData;
@@ -28,7 +29,28 @@ function ExtensionDetails({
           Back
         </Button>
         <div className="flex items-center space-x-3">
-          <img src={extension.icon} alt={extension.name} className="w-8 h-8 rounded" />
+          {extension.icon ? (
+            <img 
+              src={extension.icon} 
+              alt={extension.name} 
+              className="w-8 h-8 rounded" 
+              onError={(e) => {
+                e.currentTarget.style.display = 'none';
+                const iconContainer = e.currentTarget.parentElement;
+                if (iconContainer) {
+                  const icon = document.createElement('div');
+                  icon.className = 'w-8 h-8 flex items-center justify-center bg-primary/5 rounded';
+                  iconContainer.appendChild(icon);
+                  const root = ReactDOM.createRoot(icon);
+                  root.render(<PuzzleIcon className="w-5 h-5 text-primary/70" />);
+                }
+              }}
+            />
+          ) : (
+            <div className="w-8 h-8 flex items-center justify-center bg-primary/5 rounded">
+              <PuzzleIcon className="w-5 h-5 text-primary/70" />
+            </div>
+          )}
           <h2 className="text-xl font-semibold">{extension.name}</h2>
         </div>
       </div>
