@@ -22,7 +22,7 @@ function ExtensionDetails({
   onBack
 }: ExtensionDetailsProps) {
   const [iconError, setIconError] = useState(false);
-  
+
   return (
     <div className="space-y-6">
       <div className="flex items-center space-x-4">
