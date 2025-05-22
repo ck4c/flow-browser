@@ -28,7 +28,29 @@ async function generateSharedExtensionData(
   extensionData: ExtensionData
 ): Promise<SharedExtensionData | null> {
   const extensionPath = await extensionsManager.getExtensionPath(extensionId, extensionData);
-  if (!extensionPath) return null;
+  
+  if (!extensionPath) {
+    const iconURL = new URL("flow://extension-icon");
+    iconURL.searchParams.set("id", extensionId);
+    iconURL.searchParams.set("profile", extensionsManager.profileId);
+    
+    return {
+      type: extensionData.type,
+      id: extensionId,
+      name: extensionData.path ? `Extension at ${extensionData.path}` : `Extension ${extensionId}`,
+      short_name: undefined,
+      description: "Extension files not found. The extension may have been moved or deleted.",
+      icon: iconURL.toString(),
+      enabled: false,
+      pinned: extensionData.pinned ? true : false,
+      version: "unknown",
+      path: null, // Indicate that the path is missing
+      size: 0,
+      permissions: [],
+      inspectViews: [],
+      missing: true // Add a flag to indicate the extension is missing
+    };
+  }
 
   const manifest = await getManifest(extensionPath);
   if (!manifest) return null;
@@ -64,7 +86,8 @@ async function generateSharedExtensionData(
     size,
     permissions,
     // TODO: Add inspect views
-    inspectViews: []
+    inspectViews: [],
+    missing: false // Add a flag to indicate the extension is not missing
   };
 }
 
@@ -154,7 +177,7 @@ ipcMain.handle(
 
     if (!sharedExtensionData) return false;
 
-    const extensionIcon = await getExtensionIcon(sharedExtensionData.path);
+    const extensionIcon = sharedExtensionData.path ? await getExtensionIcon(sharedExtensionData.path) : null;
 
     const returnValue = await dialog.showMessageBox(window.window, {
       icon: extensionIcon ?? undefined,
