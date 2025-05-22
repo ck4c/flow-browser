@@ -27,7 +27,13 @@ interface ExtensionCardProps {
   onUninstallClick?: (id: string) => Promise<void>;
 }
 
-function ExtensionCard({ extension, isProcessing, setExtensionEnabled, onDetailsClick, onUninstallClick }: ExtensionCardProps) {
+function ExtensionCard({
+  extension,
+  isProcessing,
+  setExtensionEnabled,
+  onDetailsClick,
+  onUninstallClick
+}: ExtensionCardProps) {
   const [isRemoving, setIsRemoving] = useState(false);
 
   const onRemoveClick = async () => {
@@ -66,25 +72,19 @@ function ExtensionCard({ extension, isProcessing, setExtensionEnabled, onDetails
           />
         </div>
         <p className="text-muted-foreground text-sm">{extension.description || ""}</p>
-        
+
         {/* Add error state for extensions that can't be found */}
         {extension.type === "unpacked" && !extension.path && (
           <div className="bg-red-50 dark:bg-red-900/20 p-2 rounded-md mt-2 mb-2">
             <p className="text-xs text-red-600 dark:text-red-400">
               Extension files not found. The extension may have been moved or deleted.
             </p>
-            <Button 
-              variant="destructive" 
-              size="sm" 
-              className="mt-2" 
-              onClick={onRemoveClick}
-              disabled={isRemoving}
-            >
+            <Button variant="destructive" size="sm" className="mt-2" onClick={onRemoveClick} disabled={isRemoving}>
               Uninstall
             </Button>
           </div>
         )}
-        
+
         <div className="flex items-center space-x-4">
           <div className="flex items-center space-x-2">
             <span className="text-xs text-muted-foreground">Version {extension.version}</span>

@@ -234,7 +234,7 @@ export class ExtensionManager extends TypedEventEmitter<{
 
           return extensionData.path;
         }
-        
+
         // Fall back to the old behavior if path is not available
         const unpackedPath = this.getExtensionsPath("unpacked");
         const extensionFolder = path.join(unpackedPath, extensionId);
@@ -513,7 +513,7 @@ export class ExtensionManager extends TypedEventEmitter<{
         pinned: DEFAULT_PINNED_STATE,
         path: extensionPath // Store the original path
       };
-      
+
       await this.extensionStore.set(extension.id, extensionData);
       await this.updateCache();
 

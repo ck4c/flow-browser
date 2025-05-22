@@ -116,8 +116,8 @@ function ExtensionsPage() {
                   </div>
                   {isDeveloperMode && (
                     <div className="flex space-x-2">
-                      <Button 
-                        variant="outline" 
+                      <Button
+                        variant="outline"
                         size="sm"
                         onClick={async () => {
                           const success = await flow.extensions.loadUnpacked();
