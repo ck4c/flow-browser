@@ -28,12 +28,12 @@ async function generateSharedExtensionData(
   extensionData: ExtensionData
 ): Promise<SharedExtensionData | null> {
   const extensionPath = await extensionsManager.getExtensionPath(extensionId, extensionData);
-  
+
   if (!extensionPath) {
     const iconURL = new URL("flow://extension-icon");
     iconURL.searchParams.set("id", extensionId);
     iconURL.searchParams.set("profile", extensionsManager.profileId);
-    
+
     return {
       type: extensionData.type,
       id: extensionId,
