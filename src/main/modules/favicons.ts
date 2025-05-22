@@ -397,15 +397,13 @@ export function normalizeURL(url: string): string {
       parsedURL.pathname = `${parsedURL.pathname}/`;
     }
 
-    // Remove query params from the URL
-    parsedURL.search = "";
-
     // Remove hash from the URL
     parsedURL.hash = "";
 
     // Remove the path from the URL if the flag is enabled
     if (FLAGS.FAVICONS_REMOVE_PATH) {
       parsedURL.pathname = "";
+      parsedURL.search = "";
     }
 
     return parsedURL.toString();

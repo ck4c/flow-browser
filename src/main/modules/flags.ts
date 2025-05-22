@@ -35,6 +35,6 @@ export const FLAGS: Flags = {
   // Glance: Enable the glance feature
   GLANCE_ENABLED: false,
 
-  // Favicons: Remove the path from the favicon URL
-  FAVICONS_REMOVE_PATH: true
+  // Favicons: Include path and query in favicon URL
+  FAVICONS_REMOVE_PATH: false
 };
