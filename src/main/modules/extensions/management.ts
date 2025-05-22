@@ -12,6 +12,7 @@ export type ExtensionData = {
   type: ExtensionType;
   disabled: boolean;
   pinned: boolean;
+  path?: string; // Path field for unpacked extensions
 };
 
 type ExtensionDataWithId = ExtensionData & {
@@ -220,6 +221,21 @@ export class ExtensionManager extends TypedEventEmitter<{
   public async getExtensionPath(extensionId: string, extensionData: ExtensionData) {
     switch (extensionData.type) {
       case "unpacked": {
+        if (extensionData.path) {
+          const isADirectory = await isDirectory(extensionData.path);
+          if (!isADirectory) {
+            return null;
+          }
+
+          const hasManifestFile = await hasManifest(extensionData.path);
+          if (!hasManifestFile) {
+            return null;
+          }
+
+          return extensionData.path;
+        }
+        
+        // Fall back to the old behavior if path is not available
         const unpackedPath = this.getExtensionsPath("unpacked");
         const extensionFolder = path.join(unpackedPath, extensionId);
 
@@ -491,7 +507,15 @@ export class ExtensionManager extends TypedEventEmitter<{
         return null;
       }
 
-      await this.addInstalledExtension("unpacked", extension.id);
+      const extensionData: ExtensionData = {
+        type: "unpacked",
+        disabled: false,
+        pinned: DEFAULT_PINNED_STATE,
+        path: extensionPath // Store the original path
+      };
+      
+      await this.extensionStore.set(extension.id, extensionData);
+      await this.updateCache();
 
       // After load extension
       await this._afterLoadExtension(extension);

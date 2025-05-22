@@ -149,6 +149,16 @@ function ExtensionsPage() {
                         isProcessing={isProcessing}
                         setExtensionEnabled={setExtensionEnabled}
                         onDetailsClick={handleDetailsClick}
+                        onUninstallClick={async (extensionId) => {
+                          setIsProcessing(true);
+                          const success = await flow.extensions.uninstallExtension(extensionId);
+                          if (success) {
+                            toast.success("Extension uninstalled successfully!");
+                          } else {
+                            toast.error("Failed to uninstall extension");
+                          }
+                          setIsProcessing(false);
+                        }}
                       />
                     ))}
                   </div>
