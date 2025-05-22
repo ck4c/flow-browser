@@ -393,7 +393,12 @@ export function normalizeURL(url: string): string {
     }
 
     // Add trailing slash to pathname if the flag is enabled and it doesn't have one and isn't empty
-    if (FLAGS.FAVICONS_FORCE_TRAILING_SLASH && parsedURL.pathname && parsedURL.pathname !== "/" && !parsedURL.pathname.endsWith("/")) {
+    if (
+      FLAGS.FAVICONS_FORCE_TRAILING_SLASH &&
+      parsedURL.pathname &&
+      parsedURL.pathname !== "/" &&
+      !parsedURL.pathname.endsWith("/")
+    ) {
       parsedURL.pathname = `${parsedURL.pathname}/`;
     }
 
