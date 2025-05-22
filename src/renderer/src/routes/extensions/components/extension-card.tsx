@@ -5,7 +5,6 @@ import { useState } from "react";
 import { toast } from "sonner";
 import type { SharedExtensionData } from "~/types/extensions";
 import { PuzzleIcon } from "lucide-react";
-import ReactDOM from "react-dom/client";
 
 // Keeping this for backward compatibility
 export interface Extension {
@@ -37,6 +36,7 @@ function ExtensionCard({
   onUninstallClick
 }: ExtensionCardProps) {
   const [isRemoving, setIsRemoving] = useState(false);
+  const [iconError, setIconError] = useState(false);
 
   const onRemoveClick = async () => {
     setIsRemoving(true);
@@ -61,22 +61,12 @@ function ExtensionCard({
       className="p-4 rounded-lg flex items-start gap-4 hover:bg-primary/5 border-border border mb-2"
     >
       <div className="flex-shrink-0 w-10 h-10">
-        {extension.icon ? (
+        {extension.icon && !iconError ? (
           <img
             src={extension.icon}
             alt={extension.name}
             className="w-full h-full rounded"
-            onError={(e) => {
-              e.currentTarget.style.display = "none";
-              const iconContainer = e.currentTarget.parentElement;
-              if (iconContainer) {
-                const icon = document.createElement("div");
-                icon.className = "w-full h-full flex items-center justify-center bg-primary/5 rounded";
-                iconContainer.appendChild(icon);
-                const root = ReactDOM.createRoot(icon);
-                root.render(<PuzzleIcon className="w-6 h-6 text-primary/70" />);
-              }
-            }}
+            onError={() => setIconError(true)}
           />
         ) : (
           <div className="w-full h-full flex items-center justify-center bg-primary/5 rounded">
