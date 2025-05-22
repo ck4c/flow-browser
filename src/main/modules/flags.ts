@@ -11,6 +11,7 @@ type Flags = {
   SHOW_DEBUG_DEVTOOLS: boolean;
   GLANCE_ENABLED: boolean;
   FAVICONS_REMOVE_PATH: boolean;
+  FAVICONS_FORCE_TRAILING_SLASH: boolean;
 };
 
 export const FLAGS: Flags = {
@@ -36,5 +37,8 @@ export const FLAGS: Flags = {
   GLANCE_ENABLED: false,
 
   // Favicons: Include path and query in favicon URL
-  FAVICONS_REMOVE_PATH: false
+  FAVICONS_REMOVE_PATH: false,
+
+  // Favicons: Force trailing slash on pathnames
+  FAVICONS_FORCE_TRAILING_SLASH: true
 };

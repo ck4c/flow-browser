@@ -392,8 +392,8 @@ export function normalizeURL(url: string): string {
       parsedURL.protocol = "http:";
     }
 
-    // Add trailing slash to pathname if it doesn't have one and isn't empty
-    if (parsedURL.pathname && parsedURL.pathname !== "/" && !parsedURL.pathname.endsWith("/")) {
+    // Add trailing slash to pathname if the flag is enabled and it doesn't have one and isn't empty
+    if (FLAGS.FAVICONS_FORCE_TRAILING_SLASH && parsedURL.pathname && parsedURL.pathname !== "/" && !parsedURL.pathname.endsWith("/")) {
       parsedURL.pathname = `${parsedURL.pathname}/`;
     }
 
