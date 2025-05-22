@@ -62,16 +62,16 @@ function ExtensionCard({
     >
       <div className="flex-shrink-0 w-10 h-10">
         {extension.icon ? (
-          <img 
-            src={extension.icon} 
-            alt={extension.name} 
-            className="w-full h-full rounded" 
+          <img
+            src={extension.icon}
+            alt={extension.name}
+            className="w-full h-full rounded"
             onError={(e) => {
-              e.currentTarget.style.display = 'none';
+              e.currentTarget.style.display = "none";
               const iconContainer = e.currentTarget.parentElement;
               if (iconContainer) {
-                const icon = document.createElement('div');
-                icon.className = 'w-full h-full flex items-center justify-center bg-primary/5 rounded';
+                const icon = document.createElement("div");
+                icon.className = "w-full h-full flex items-center justify-center bg-primary/5 rounded";
                 iconContainer.appendChild(icon);
                 const root = ReactDOM.createRoot(icon);
                 root.render(<PuzzleIcon className="w-6 h-6 text-primary/70" />);

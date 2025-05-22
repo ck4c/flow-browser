@@ -30,16 +30,16 @@ function ExtensionDetails({
         </Button>
         <div className="flex items-center space-x-3">
           {extension.icon ? (
-            <img 
-              src={extension.icon} 
-              alt={extension.name} 
-              className="w-8 h-8 rounded" 
+            <img
+              src={extension.icon}
+              alt={extension.name}
+              className="w-8 h-8 rounded"
               onError={(e) => {
-                e.currentTarget.style.display = 'none';
+                e.currentTarget.style.display = "none";
                 const iconContainer = e.currentTarget.parentElement;
                 if (iconContainer) {
-                  const icon = document.createElement('div');
-                  icon.className = 'w-8 h-8 flex items-center justify-center bg-primary/5 rounded';
+                  const icon = document.createElement("div");
+                  icon.className = "w-8 h-8 flex items-center justify-center bg-primary/5 rounded";
                   iconContainer.appendChild(icon);
                   const root = ReactDOM.createRoot(icon);
                   root.render(<PuzzleIcon className="w-5 h-5 text-primary/70" />);
