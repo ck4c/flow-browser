@@ -37,9 +37,11 @@ async function generateSharedExtensionData(
     return {
       type: extensionData.type,
       id: extensionId,
-      name: extensionData.path ? `Extension at ${extensionData.path}` : `Extension ${extensionId}`,
+      name: `Extension ${extensionId}`,
       short_name: undefined,
-      description: "Extension files not found. The extension may have been moved or deleted.",
+      description: extensionData.path
+        ? `Extension at ${extensionData.path}`
+        : "Extension files not found. The extension may have been moved or deleted.",
       icon: iconURL.toString(),
       enabled: false,
       pinned: extensionData.pinned ? true : false,
