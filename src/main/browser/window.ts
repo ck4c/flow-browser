@@ -28,6 +28,20 @@ type BrowserWindowEvents = {
   destroy: [];
 };
 
+function applyMicaEffect(window: MicaBrowserWindow) {
+  // if (window.isMaximized()) {
+  //   window.setSquareCorner();
+  // } else {
+  //   window.setRoundedCorner();
+  // }
+
+  // Window 7+
+  window.setAcrylic();
+
+  // Window 11
+  window.setMicaAcrylicEffect();
+}
+
 export class TabbedBrowserWindow extends TypedEventEmitter<BrowserWindowEvents> {
   id: number;
   window: MicaBrowserWindow;
@@ -76,15 +90,15 @@ export class TabbedBrowserWindow extends TypedEventEmitter<BrowserWindowEvents> 
     });
 
     // Apply Mica effect on Windows
-    if (process.platform === "win32") {
-      this.window.setRoundedCorner();
-
-      // Window 7+
-      this.window.setAcrylic();
-
-      // Window 11
-      this.window.setMicaAcrylicEffect();
-    }
+    const useMicaElectron = process.platform === "win32" && FLAGS.USE_MICA_ELECTRON;
+    const updateMicaEffect = () => {
+      if (useMicaElectron) {
+        applyMicaEffect(this.window);
+        return true;
+      }
+      return false;
+    };
+    updateMicaEffect();
 
     // Hide the window buttons before the component is mounted
     if (type === "normal") {
@@ -113,9 +127,11 @@ export class TabbedBrowserWindow extends TypedEventEmitter<BrowserWindowEvents> 
 
     this.window.on("maximize", () => {
       fireWindowStateChanged(this);
+      updateMicaEffect();
     });
     this.window.on("unmaximize", () => {
       fireWindowStateChanged(this);
+      updateMicaEffect();
     });
 
     // Focus on the focused tab
