@@ -12,7 +12,7 @@ import { windowEvents } from "@/modules/windows";
 import { initializePortalComponentWindows } from "@/browser/components/portal-component-windows";
 import { defaultSessionReady } from "@/browser/sessions";
 import { fireWindowStateChanged } from "@/ipc/browser/interface";
-import { MicaBrowserWindow } from "mica-electron";
+import { IS_WINDOWS_11, MicaBrowserWindow } from "mica-electron";
 
 type BrowserWindowType = "normal" | "popup";
 
@@ -35,11 +35,13 @@ function applyMicaEffect(window: MicaBrowserWindow) {
   //   window.setRoundedCorner();
   // }
 
-  // Window 7+
-  window.setAcrylic();
-
-  // Window 11
-  window.setMicaAcrylicEffect();
+  if (IS_WINDOWS_11) {
+    // Window 11
+    window.setMicaAcrylicEffect();
+  } else {
+    // Window 7+
+    window.setAcrylic();
+  }
 }
 
 export class TabbedBrowserWindow extends TypedEventEmitter<BrowserWindowEvents> {
