@@ -5,13 +5,14 @@ import { PageBounds } from "@/ipc/browser/page";
 import { FLAGS } from "@/modules/flags";
 import { TypedEventEmitter } from "@/modules/typed-event-emitter";
 import { getLastUsedSpace } from "@/sessions/spaces";
-import { BrowserWindow, nativeTheme, WebContents } from "electron";
+import { nativeTheme, WebContents } from "electron";
 import "./close-preventer";
 import { WindowEventType } from "@/modules/windows";
 import { windowEvents } from "@/modules/windows";
 import { initializePortalComponentWindows } from "@/browser/components/portal-component-windows";
 import { defaultSessionReady } from "@/browser/sessions";
 import { fireWindowStateChanged } from "@/ipc/browser/interface";
+import { MicaBrowserWindow } from "mica-electron";
 
 type BrowserWindowType = "normal" | "popup";
 
@@ -29,7 +30,7 @@ type BrowserWindowEvents = {
 
 export class TabbedBrowserWindow extends TypedEventEmitter<BrowserWindowEvents> {
   id: number;
-  window: BrowserWindow;
+  window: MicaBrowserWindow;
   public viewManager: ViewManager;
   public coreWebContents: WebContents[];
 
@@ -46,7 +47,7 @@ export class TabbedBrowserWindow extends TypedEventEmitter<BrowserWindowEvents> 
   constructor(browser: Browser, type: BrowserWindowType, options: BrowserWindowCreationOptions = {}) {
     super();
 
-    this.window = new BrowserWindow({
+    this.window = new MicaBrowserWindow({
       minWidth: type === "normal" ? 800 : 250,
       minHeight: type === "normal" ? 400 : 200,
       width: 1280,
@@ -73,6 +74,17 @@ export class TabbedBrowserWindow extends TypedEventEmitter<BrowserWindowEvents> 
       roundedCorners: true,
       ...(options.window || {})
     });
+
+    // Apply Mica effect on Windows
+    if (process.platform === "win32") {
+      this.window.setRoundedCorner();
+
+      // Window 7+
+      this.window.setAcrylic();
+
+      // Window 11
+      this.window.setMicaAcrylicEffect();
+    }
 
     // Hide the window buttons before the component is mounted
     if (type === "normal") {
