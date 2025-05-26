@@ -29,11 +29,11 @@ type BrowserWindowEvents = {
 };
 
 function applyMicaEffect(window: MicaBrowserWindow) {
-  // if (window.isMaximized()) {
-  //   window.setSquareCorner();
-  // } else {
-  //   window.setRoundedCorner();
-  // }
+  if (window.isMaximized()) {
+    window.setSquareCorner();
+  } else {
+    window.setRoundedCorner();
+  }
 
   if (IS_WINDOWS_11) {
     // Window 11
