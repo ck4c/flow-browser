@@ -13,6 +13,7 @@ import { initializePortalComponentWindows } from "@/browser/components/portal-co
 import { defaultSessionReady } from "@/browser/sessions";
 import { fireWindowStateChanged } from "@/ipc/browser/interface";
 import { IS_WINDOWS_11, MicaBrowserWindow } from "mica-electron";
+import { debugPrint } from "@/modules/output";
 
 type BrowserWindowType = "normal" | "popup";
 
@@ -83,6 +84,7 @@ export class TabbedBrowserWindow extends TypedEventEmitter<BrowserWindowEvents> 
       frame: false,
       transparent: false,
       resizable: true,
+      show: false,
       backgroundColor: process.platform === "darwin" ? "#00000000" : "#000000",
       visualEffectState: "followWindow",
       vibrancy: "fullscreen-ui", // on MacOS
@@ -114,6 +116,9 @@ export class TabbedBrowserWindow extends TypedEventEmitter<BrowserWindowEvents> 
     if (!hasSizeOptions && !hasPositionOptions) {
       this.window.maximize();
     }
+
+    // Show window when ready or after timeout - whichever comes first
+    this.setupWindowShow();
 
     this.window.on("enter-full-screen", () => {
       this.emit("enter-full-screen");
@@ -157,11 +162,6 @@ export class TabbedBrowserWindow extends TypedEventEmitter<BrowserWindowEvents> 
       if (!tabWC.isFocused()) {
         tabWC.focus();
       }
-    });
-
-    this.window.once("ready-to-show", () => {
-      this.window.show();
-      this.window.focus();
     });
 
     this.window.on("focus", () => {
@@ -310,5 +310,23 @@ export class TabbedBrowserWindow extends TypedEventEmitter<BrowserWindowEvents> 
 
   getWindowButtonVisibility() {
     return this.windowButtonVisibility;
+  }
+
+  private setupWindowShow() {
+    let hasShown = false;
+
+    const showWindow = () => {
+      if (hasShown) return;
+      hasShown = true;
+      this.window.show();
+      this.window.focus();
+    };
+
+    // Race between ready-to-show event and 750ms timeout
+    this.window.once("ready-to-show", showWindow);
+    setTimeout(() => {
+      debugPrint("INITIALIZATION", "Fallback window show");
+      showWindow();
+    }, 1000);
   }
 }
