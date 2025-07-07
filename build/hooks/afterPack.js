@@ -17,6 +17,7 @@ export async function handler(context) {
     let shouldSign = true;
     if (process.platform === "darwin" && MACOS_IS_UNIVERSAL) {
       const appOutDir = context.appOutDir;
+      // Only sign the universal build, not the unmerged builds
       if (!appOutDir.endsWith("/mac-universal")) {
         shouldSign = false;
       }
